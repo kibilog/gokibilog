@@ -34,7 +34,7 @@ func (k *Kibilog) AddLogPool(pool *LogPool) {
 // GetLogPoolById returns [LogPool] by its LogID if it was previously set.
 //
 // Otherwise, it returns an error.
-func (k Kibilog) GetLogPoolById(logId string) (logPool *LogPool, err error) {
+func (k *Kibilog) GetLogPoolById(logId string) (logPool *LogPool, err error) {
 	logPool, ok := k.pools[logId]
 	if !ok {
 		return nil, fmt.Errorf("LogPool with id \"%s\" is not found!", logId)

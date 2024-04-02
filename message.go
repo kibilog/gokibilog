@@ -1,6 +1,7 @@
 package gokibilog
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -31,17 +32,15 @@ type Message struct {
 }
 
 // The text of the message to be saved.
-func (m *Message) SetMessage(message string) *Message {
+func (m *Message) SetMessage(message string) {
 	m.Message = message
-	return m
 }
 
 // The time that the message will display. It is assumed that it indicates the time when the message occurred.
 // If it is not passed, we will substitute a value equal to the time we received the request.
-func (m *Message) SetCreatedAt(createdAt time.Time) *Message {
+func (m *Message) SetCreatedAt(createdAt time.Time) {
 	createdAt = createdAt.UTC()
 	m.CreatedAt = &createdAt
-	return m
 }
 
 // [Message] level according to RFC 5424 standard.
@@ -63,16 +62,14 @@ func (m *Message) SetCreatedAt(createdAt time.Time) *Message {
 // - [LevelAlert]
 //
 // - [LevelEmergency]
-func (m *Message) SetLevel(level MessageLevel) *Message {
+func (m *Message) SetLevel(level MessageLevel) {
 	m.Level = level
-	return m
 }
 
 // If necessary, additional parameters can be registered to form an array with scalar values.
 // The transmitted value must be able to be processed via "encoding/json".
-func (m *Message) SetParams(params any) *Message {
+func (m *Message) SetParams(params any) {
 	m.Params = params
-	return m
 }
 
 // If we need to group messages, we need to form a message partition value.
@@ -99,7 +96,11 @@ func (m *Message) SetPartition(partition any) error {
 }
 
 // Make new [Message].
-func NewMessage(message string, level MessageLevel) *Message {
+func NewMessage(message string, level MessageLevel) (*Message, error) {
+	message = strings.Trim(message, "\r\n\t ")
+	if utf8.RuneCountInString(message) < 1 {
+		return nil, errors.New("the message cannot be empty")
+	}
 	m := Message{
 		Message:   message,
 		CreatedAt: nil,
@@ -107,5 +108,5 @@ func NewMessage(message string, level MessageLevel) *Message {
 		Params:    nil,
 		Partition: nil,
 	}
-	return &m
+	return &m, nil
 }
