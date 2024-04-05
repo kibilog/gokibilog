@@ -10,18 +10,13 @@ var instance *Kibilog
 
 // Kibilog is singleton entity. Use [GetInstance] to get this.
 type Kibilog struct {
-	mu        sync.Mutex
-	authToken string
-	pools     map[string]*LogPool
+	mu    sync.Mutex
+	pools map[string]*LogPool
 }
 
 // SetAuthToken registers the user's api token required to send messages to Kibilog.com
 func (k *Kibilog) SetAuthToken(authToken string) {
-	k.authToken = authToken
-}
-
-func (k *Kibilog) getAuthToken() string {
-	return k.authToken
+	getClientInstance().SetToken(authToken)
 }
 
 // AddLogPool allows you to register another [LogPool].
@@ -49,7 +44,12 @@ func (k *Kibilog) SendMessages() (errs []error) {
 		if len(poolErrs) > 0 {
 			errs = append(errs, poolErrs...)
 		}
-		// TODO send pool
+		err := getClientInstance().Send(pool)
+		if err != nil {
+			errs = append(errs, err)
+		} else {
+			delete(k.pools, pool.getLogId())
+		}
 	}
 	return errs
 }

@@ -118,18 +118,8 @@ func TestMessage_SetCreatedAt(t *testing.T) {
 		m, _ := NewMessage("test", LevelDebug)
 		m.SetCreatedAt(createdAt)
 
-		if m.CreatedAt.Format("2006-01-02T15:04:05") != createdAt.UTC().Format("2006-01-02T15:04:05") {
-			t.Errorf("SetCreatedAt() = %#v, want %#v", m.CreatedAt.Format("2006-01-02T15:04:05"), createdAt.UTC().Format("2006-01-02T15:04:05"))
-		}
-	})
-
-	t.Run("time not modified", func(t *testing.T) {
-		createdAt := time.Date(2024, 01, 30, 15, 16, 59, 0, loc)
-		m, _ := NewMessage("test", LevelDebug)
-		m.SetCreatedAt(createdAt)
-
-		if createdAt.Format("2006-01-02T15:04:05") == createdAt.UTC().Format("2006-01-02T15:04:05") {
-			t.Errorf("Entered createdAt was modified!")
+		if *m.CreatedAt != createdAt.UTC().Unix() {
+			t.Errorf("SetCreatedAt() = %#v, want %#v", *m.CreatedAt, createdAt.UTC().Unix())
 		}
 	})
 }

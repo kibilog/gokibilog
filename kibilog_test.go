@@ -42,7 +42,7 @@ func TestKibilog_GetSetAuthToken(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			GetInstance().SetAuthToken(tt.args.authToken)
-			if got := GetInstance().getAuthToken(); got != tt.want {
+			if got := getClientInstance().authToken; got != tt.want {
 				t.Errorf("getAuthToken() = %v, want %v", got, tt.want)
 			}
 		})

@@ -25,7 +25,7 @@ const (
 // [Message] stores information that will be transmitted to the log in Kibilog.com
 type Message struct {
 	Message   string       `json:"message"`
-	CreatedAt *time.Time   `json:"createdAt"`
+	CreatedAt *int64       `json:"createdAt"`
 	Level     MessageLevel `json:"level"`
 	Params    any          `json:"params"`
 	Partition *string      `json:"partition"`
@@ -39,8 +39,8 @@ func (m *Message) SetMessage(message string) {
 // The time that the message will display. It is assumed that it indicates the time when the message occurred.
 // If it is not passed, we will substitute a value equal to the time we received the request.
 func (m *Message) SetCreatedAt(createdAt time.Time) {
-	createdAt = createdAt.UTC()
-	m.CreatedAt = &createdAt
+	createdAtInt := createdAt.UTC().Unix()
+	m.CreatedAt = &createdAtInt
 }
 
 // [Message] level according to RFC 5424 standard.
@@ -68,6 +68,7 @@ func (m *Message) SetLevel(level MessageLevel) {
 
 // If necessary, additional parameters can be registered to form an array with scalar values.
 // The transmitted value must be able to be processed via "encoding/json".
+// Available values: ~array, ~map, ~struct
 func (m *Message) SetParams(params any) {
 	m.Params = params
 }
