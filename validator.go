@@ -1,7 +1,19 @@
 package gokibilog
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 func validatePool(pool *LogPool) (errs []error) {
-	// TODO validate messages in pool and remove incorrect
-	// Template "Error in log \"%s\": params is incorrect"
+	for k, m := range pool.messages {
+		_, err := json.Marshal(m)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Error in the message for \"%s\": %s", pool.logId, err.Error()))
+		}
+		pool.messages[k] = nil
+	}
+	pool.removeNilMessages()
+
 	return errs
 }

@@ -28,6 +28,16 @@ func (l *LogPool) getLogId() string {
 	return l.logId
 }
 
+func (l *LogPool) removeNilMessages() {
+	messagesNew := []*Message{}
+	for _, message := range l.messages {
+		if message != nil {
+			messagesNew = append(messagesNew, message)
+		}
+	}
+	l.messages = messagesNew
+}
+
 // Create new LogPool
 func NewLogPool(logId string) (*LogPool, error) {
 	logId = strings.Trim(logId, " ")

@@ -100,3 +100,64 @@ func TestLogPool_getLogId(t *testing.T) {
 		})
 	}
 }
+
+func TestLogPool_removeNilMessages(t *testing.T) {
+	type args struct {
+		logId    string
+		messages func() []*Message
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			args: args{
+				logId: "01hggahp9skcph42wknxbckb46",
+				messages: func() []*Message {
+					a := []*Message{}
+					m1, _ := NewMessage("test", LevelInfo)
+					a = append(a, m1)
+					m2, _ := NewMessage("test", LevelInfo)
+					a = append(a, m2)
+					return a
+				},
+			},
+			want: 2,
+		},
+		{
+			args: args{
+				logId: "01hggahp9skcph42wknxbckb46",
+				messages: func() []*Message {
+					a := []*Message{}
+					m1, _ := NewMessage("test", LevelInfo)
+					a = append(a, m1)
+					a = append(a, nil)
+					return a
+				},
+			},
+			want: 1,
+		},
+		{
+			args: args{
+				logId: "01hggahp9skcph42wknxbckb46",
+				messages: func() []*Message {
+					a := []*Message{}
+					a = append(a, nil)
+					return a
+				},
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l, _ := NewLogPool(tt.args.logId)
+			l.messages = tt.args.messages()
+			l.removeNilMessages()
+			if l.Len() != tt.want {
+				t.Errorf("removeNilMessages() and Len() after = %v, want %v", l.Len(), tt.args.logId)
+			}
+		})
+	}
+}
