@@ -48,7 +48,7 @@ func (k *Kibilog) SendMessages() (errs []error) {
 		if err != nil {
 			errs = append(errs, err)
 		} else {
-			delete(k.pools, pool.getLogId())
+			pool.messages = []*Message{}
 		}
 	}
 	return errs
