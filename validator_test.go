@@ -12,6 +12,7 @@ func Test_validatePool(t *testing.T) {
 		name          string
 		args          args
 		wantErrsCount int
+		messageCount  int
 	}{
 		{
 			name: "valid",
@@ -26,6 +27,7 @@ func Test_validatePool(t *testing.T) {
 				},
 			},
 			wantErrsCount: 0,
+			messageCount:  2,
 		},
 		{
 			name: "valid",
@@ -39,15 +41,16 @@ func Test_validatePool(t *testing.T) {
 				},
 			},
 			wantErrsCount: 0,
+			messageCount:  1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			logPool := tt.args.pool()
-			lCount := logPool.Len()
+			gotErrs := validatePool(logPool)
 
-			if gotErrs := validatePool(logPool); len(gotErrs) != tt.wantErrsCount || lCount == logPool.Len() {
-				t.Errorf("validatePool(). Erros count = %v, want %v. Messages count %v, not changed.", len(gotErrs), tt.wantErrsCount, logPool.Len())
+			if len(gotErrs) != tt.wantErrsCount || tt.messageCount != logPool.Len() {
+				t.Errorf("validatePool(). Erros count = %v, want %v. Messages count %v, want %v.", len(gotErrs), tt.wantErrsCount, logPool.Len(), tt.messageCount)
 			}
 
 		})

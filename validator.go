@@ -10,8 +10,8 @@ func validatePool(pool *LogPool) (errs []error) {
 		_, err := json.Marshal(m)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("Error in the message for \"%s\": %s", pool.logId, err.Error()))
+			pool.messages[k] = nil
 		}
-		pool.messages[k] = nil
 	}
 	pool.removeNilMessages()
 
