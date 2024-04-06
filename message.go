@@ -11,6 +11,7 @@ import (
 
 type MessageLevel int
 
+// Constants of message types according to the RFC 5424 standard
 const (
 	LevelDebug     MessageLevel = 10
 	LevelInfo      MessageLevel = 20
@@ -96,7 +97,7 @@ func (m *Message) SetPartition(partition any) error {
 	return nil
 }
 
-// Make new [Message].
+// NewMessage create new [Message]
 func NewMessage(message string, level MessageLevel) (*Message, error) {
 	message = strings.Trim(message, "\r\n\t ")
 	if utf8.RuneCountInString(message) < 1 {

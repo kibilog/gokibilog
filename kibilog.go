@@ -40,6 +40,9 @@ func (k *Kibilog) GetLogPoolById(logId string) (logPool *LogPool, err error) {
 // SendMessages sends all messages that were previously posted in all registered [LogPool].
 func (k *Kibilog) SendMessages() (errs []error) {
 	for _, pool := range k.pools {
+		if len(pool.messages) == 0 {
+			continue
+		}
 		poolErrs := validatePool(pool)
 		if len(poolErrs) > 0 {
 			errs = append(errs, poolErrs...)
