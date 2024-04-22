@@ -108,6 +108,11 @@ func Example_partition() {
 	for _, comment := range aComments {
 		// Since there are many packages that can make a UUID, we will not focus on how to get a UUID.
 		// Let's imagine that we have a GetUUIDByPostId method that returns a string with a UUID.
+		GetUUIDByPostId := func(postId int) string {
+			// some process
+			return "e996037d-32f0-4bd0-87f1-7536182bd286"
+		}
+
 		uuid := GetUUIDByPostId(comment.PostId)
 		m, err := gokibilog.NewMessage(
 			fmt.Sprintf("New comment from %s to %d post", comment.Email, comment.PostId),
@@ -142,6 +147,10 @@ func Example_params() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/user/create", func(w http.ResponseWriter, r *http.Request) {
 		// Let's record the incoming request
+		SomeFuncGetUUIDV4 := func() string {
+			return "246a3d6c-37c7-4a90-a4f2-6ae344c82ce0"
+		}
+
 		requestUUID := SomeFuncGetUUIDV4()
 		m, _ := gokibilog.NewMessage("Incoming request", gokibilog.LevelInfo)
 		m.SetParams(map[string]any{
@@ -185,6 +194,9 @@ func Example_params() {
 		type Response struct {
 			Done int `json:"done"`
 			Id   int `json:"id"`
+		}
+		SomeFuncCreateUser := func(p Person) int {
+			return 1
 		}
 		resp := Response{
 			Done: 1,
